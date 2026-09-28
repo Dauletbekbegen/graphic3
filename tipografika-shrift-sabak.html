@@ -1,0 +1,1035 @@
+<!DOCTYPE html>
+<html lang="kk">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Типографика және шрифт</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=JetBrains+Mono:wght@400;500;700&family=Lora:wght@400;600&family=Manrope:wght@400;500;600;700;800&family=Oswald:wght@500&family=Pacifico&family=Playfair+Display:wght@500;700&family=PT+Serif:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#101114;
+    --surface:#181a1f;
+    --surface-2:#21242b;
+    --border:#2e323b;
+    --text:#f2f0ea;
+    --muted:#9a9ea8;
+    --muted-2:#666b77;
+    --accent:#d7ff3f;
+    --on-accent:#141600;
+    --good:#3fb87a;
+    --bad:#e8483c;
+    --serif-c:#ffb454;
+    --sans-c:#5fb4ff;
+    --radius:14px;
+    --radius-sm:8px;
+    --sans:'Manrope',system-ui,-apple-system,sans-serif;
+    --mono:'JetBrains Mono',ui-monospace,monospace;
+  }
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+  html,body{margin:0;padding:0;}
+  body{background:var(--bg);color:var(--text);font-family:var(--sans);line-height:1.55;min-height:100vh;display:flex;flex-direction:column;}
+  ::selection{background:var(--accent);color:var(--on-accent);}
+  h1,h2,h3{font-weight:800;letter-spacing:-0.01em;margin:0 0 .5em;}
+  p{margin:0 0 1em;}
+  code,.mono{font-family:var(--mono);}
+  button{font-family:var(--sans);}
+
+  header{position:sticky;top:0;z-index:20;background:rgba(16,17,20,0.93);backdrop-filter:blur(10px);border-bottom:1px solid var(--border);padding:10px 16px;}
+  .header-row{display:flex;align-items:center;justify-content:space-between;max-width:760px;margin:0 auto;gap:12px;}
+  .brand{display:flex;align-items:center;gap:10px;min-width:0;}
+  .brand-mark{width:28px;height:28px;border-radius:8px;flex:none;background:var(--accent);color:var(--on-accent);display:flex;align-items:center;justify-content:center;font-family:'Playfair Display',serif;font-weight:700;font-size:16px;}
+  .brand-text{font-size:13px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .brand-text b{color:var(--text);font-weight:700;}
+  .step-count{font-family:var(--mono);font-size:12px;color:var(--muted-2);flex:none;}
+  .progress-track{max-width:760px;margin:8px auto 0;height:4px;background:var(--surface-2);border-radius:4px;overflow:hidden;}
+  .progress-fill{height:100%;border-radius:4px;background:var(--accent);transition:width .35s ease;}
+
+  main{flex:1;display:flex;justify-content:center;padding:28px 16px 120px;}
+  .stage{width:100%;max-width:640px;}
+  .kicker{font-family:var(--mono);font-size:12px;color:var(--muted-2);display:flex;align-items:center;gap:8px;margin-bottom:10px;}
+  .kicker .num{color:var(--on-accent);background:var(--accent);font-weight:700;min-width:20px;height:20px;padding:0 5px;border-radius:5px;display:inline-flex;align-items:center;justify-content:center;font-size:11px;}
+  .stage h2{font-size:clamp(22px,5.5vw,30px);}
+  .lede{color:var(--muted);font-size:15px;}
+
+  .card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:20px;margin:16px 0;}
+  .fact{border-left:3px solid var(--accent);background:var(--surface-2);border-radius:0 var(--radius-sm) var(--radius-sm) 0;padding:12px 14px;font-size:14px;color:var(--muted);margin:14px 0;}
+  .fact b{color:var(--text);}
+  ul.plain{margin:0 0 1em;padding-left:20px;}
+  ul.plain li{margin-bottom:6px;}
+
+  /* specimen cards */
+  .spec-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin:14px 0;}
+  .spec{border:1px solid var(--border);border-radius:var(--radius-sm);background:var(--surface-2);padding:12px 14px;}
+  .spec .big{font-size:38px;line-height:1.1;margin-bottom:6px;}
+  .spec b{display:block;font-size:13px;}
+  .spec span{font-family:var(--mono);font-size:11px;color:var(--muted);}
+  .spec.full{grid-column:1 / -1;}
+  .f-serif{font-family:'Playfair Display',Georgia,serif;}
+  .f-text-serif{font-family:'Lora',Georgia,serif;}
+  .f-sans{font-family:'Manrope',system-ui,sans-serif;}
+  .f-script{font-family:'Pacifico',cursive;}
+  .f-display{font-family:'Oswald',Impact,sans-serif;}
+  .f-mono{font-family:'JetBrains Mono',monospace;}
+
+  .demo-line{padding:12px 0;border-bottom:1px solid var(--border);}
+  .demo-line:last-child{border-bottom:none;}
+  .demo-line small{display:block;font-family:var(--mono);font-size:11px;color:var(--muted-2);margin-bottom:4px;}
+
+  .anatomy{width:100%;height:auto;display:block;}
+
+  /* fields */
+  .field{margin-bottom:16px;}
+  .field label{display:block;font-size:13px;color:var(--muted);margin-bottom:6px;}
+  .field input[type=text]{width:100%;padding:13px 14px;border-radius:var(--radius-sm);border:1px solid var(--border);background:var(--surface-2);color:var(--text);font-size:15px;font-family:var(--sans);}
+  .field input[type=text]:focus, textarea:focus, select:focus{outline:2px solid var(--accent);outline-offset:1px;}
+  textarea{width:100%;min-height:100px;padding:13px 14px;border-radius:var(--radius-sm);border:1px solid var(--border);background:var(--surface-2);color:var(--text);font-size:15px;font-family:var(--sans);resize:vertical;}
+
+  /* task */
+  .task-card{border:1px solid var(--border);border-radius:var(--radius);background:var(--surface);overflow:hidden;margin-top:10px;}
+  .task-head{padding:14px 18px;background:var(--surface-2);border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px;}
+  .task-badge{font-family:var(--mono);font-size:11px;font-weight:700;color:var(--on-accent);background:var(--accent);padding:3px 8px;border-radius:6px;flex:none;}
+  .task-head h3{font-size:16px;margin:0;}
+  .task-body{padding:18px;}
+  .q{font-weight:600;font-size:15px;}
+
+  .opt-list{display:flex;flex-direction:column;gap:9px;}
+  .opt{display:flex;align-items:center;gap:11px;text-align:left;padding:13px 14px;border-radius:var(--radius-sm);border:1px solid var(--border);background:var(--surface-2);color:var(--text);font-size:14.5px;cursor:pointer;width:100%;transition:border-color .15s, background .15s;}
+  .opt:hover{border-color:var(--muted-2);}
+  .opt .mark{width:20px;height:20px;border-radius:6px;border:2px solid var(--muted-2);flex:none;}
+  .opt.circle .mark{border-radius:50%;}
+  .opt.selected{border-color:var(--accent);background:rgba(215,255,63,0.10);}
+  .opt.selected .mark{border-color:var(--accent);background:var(--accent);}
+  .opt.correct{border-color:var(--good);background:rgba(63,184,122,0.14);}
+  .opt.correct .mark{border-color:var(--good);background:var(--good);}
+  .opt.wrong{border-color:var(--bad);background:rgba(232,72,60,0.14);}
+  .opt.wrong .mark{border-color:var(--bad);background:var(--bad);}
+  .opt:disabled{cursor:default;}
+
+  .btn{appearance:none;border:none;cursor:pointer;font-weight:700;font-size:14.5px;padding:13px 20px;border-radius:10px;min-height:46px;}
+  .btn-primary{background:var(--accent);color:var(--on-accent);}
+  .btn-primary:disabled{background:var(--surface-2);color:var(--muted-2);cursor:not-allowed;}
+  .btn-ghost{background:transparent;color:var(--text);border:1px solid var(--border);}
+  .btn-good{background:var(--good);color:#08130c;}
+  .btn-good:disabled{background:var(--surface-2);color:var(--muted-2);cursor:not-allowed;}
+  .btn-block{width:100%;}
+  .btn-row{display:flex;gap:10px;margin-top:16px;}
+
+  .feedback{margin-top:14px;padding:12px 14px;border-radius:var(--radius-sm);font-size:14px;display:none;}
+  .feedback.show{display:block;}
+  .feedback.ok{background:rgba(63,184,122,0.12);border:1px solid rgba(63,184,122,0.4);color:#bdf0d3;}
+  .feedback.mid{background:rgba(226,197,60,0.12);border:1px solid rgba(226,197,60,0.4);color:#f2e6ad;}
+  .feedback.bad{background:rgba(232,72,60,0.12);border:1px solid rgba(232,72,60,0.4);color:#f5c3be;}
+  .feedback .score{font-family:var(--mono);font-weight:700;display:block;margin-bottom:4px;}
+
+  .classify-item{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:12px 14px;border:1px solid var(--border);border-radius:var(--radius-sm);background:var(--surface-2);margin-bottom:8px;flex-wrap:wrap;}
+  .classify-item .txt{font-size:19px;flex:1 1 170px;line-height:1.25;}
+  .pill-row{display:flex;gap:6px;flex:none;}
+  .pill{padding:8px 12px;border-radius:20px;border:1px solid var(--border);background:var(--surface);color:var(--muted);font-size:12.5px;font-weight:700;cursor:pointer;}
+  .pill.sel-a{border-color:var(--serif-c);background:rgba(255,180,84,0.16);color:#ffe0b3;}
+  .pill.sel-b{border-color:var(--sans-c);background:rgba(95,180,255,0.16);color:#cfe7ff;}
+  .pill.right{border-color:var(--good)!important;}
+  .pill.wrong{border-color:var(--bad)!important;}
+
+  .match-item{margin-bottom:12px;}
+  .match-item .term{font-weight:700;font-size:14px;margin-bottom:6px;}
+  .term .chip{font-family:var(--mono);font-size:12px;padding:3px 8px;border-radius:5px;background:var(--surface-2);color:var(--accent);}
+  select{width:100%;padding:12px 14px;border-radius:var(--radius-sm);border:1px solid var(--border);background:var(--surface-2);color:var(--text);font-size:14px;font-family:var(--sans);}
+
+  .tf-item{padding:13px 14px;border:1px solid var(--border);border-radius:var(--radius-sm);background:var(--surface-2);margin-bottom:10px;}
+  .tf-item .stmt{font-size:14px;margin-bottom:10px;}
+  .tf-btns{display:flex;gap:8px;}
+  .tf-btn{flex:1;padding:10px;border-radius:8px;border:1px solid var(--border);background:var(--surface);color:var(--text);font-weight:700;font-size:13px;cursor:pointer;}
+  .tf-btn.sel-true{border-color:var(--good);background:rgba(63,184,122,0.16);}
+  .tf-btn.sel-false{border-color:var(--bad);background:rgba(232,72,60,0.16);}
+  .tf-btn.right{outline:2px solid var(--good);}
+  .tf-btn.wrong{outline:2px solid var(--bad);}
+
+  .order-item{display:flex;align-items:center;gap:10px;padding:12px 14px;border:1px solid var(--border);border-radius:var(--radius-sm);background:var(--surface-2);margin-bottom:8px;}
+  .order-item .idx{font-family:var(--mono);font-weight:700;color:var(--muted-2);width:18px;flex:none;}
+  .order-item .txt{flex:1;font-size:13.5px;}
+  .order-btns{display:flex;flex-direction:column;gap:4px;flex:none;}
+  .order-btns button{width:30px;height:24px;border-radius:5px;border:1px solid var(--border);background:var(--surface);color:var(--text);cursor:pointer;font-size:12px;line-height:1;}
+  .order-btns button:disabled{opacity:.3;cursor:default;}
+
+  /* tune */
+  .preview-box{border:1px solid var(--border);border-radius:var(--radius-sm);background:var(--surface-2);padding:18px 16px;margin:12px 0 14px;overflow:hidden;}
+  .slider-row .slabel{display:flex;justify-content:space-between;font-family:var(--mono);font-size:12.5px;margin-bottom:4px;color:var(--muted);}
+  .slider-row .slabel span:last-child{color:var(--accent);font-weight:700;}
+  input[type=range]{width:100%;height:34px;-webkit-appearance:none;background:transparent;cursor:pointer;}
+  input[type=range]::-webkit-slider-runnable-track{height:8px;border-radius:8px;background:var(--border);}
+  input[type=range]::-moz-range-track{height:8px;border-radius:8px;background:var(--border);}
+  input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:26px;height:26px;border-radius:50%;background:var(--accent);border:3px solid #fff;margin-top:-9px;}
+  input[type=range]::-moz-range-thumb{width:26px;height:26px;border-radius:50%;background:var(--accent);border:3px solid #fff;}
+  input[type=range]:disabled{opacity:.5;cursor:default;}
+
+  table.results{width:100%;border-collapse:collapse;font-size:13.5px;margin:14px 0;}
+  table.results th, table.results td{text-align:left;padding:9px 8px;border-bottom:1px solid var(--border);}
+  table.results th{color:var(--muted);font-weight:600;font-size:12px;}
+  table.results td.sc{font-family:var(--mono);text-align:right;}
+  .total-row td{font-weight:800;border-top:2px solid var(--border);border-bottom:none;}
+  .status-line{font-size:13.5px;padding:10px 12px;border-radius:8px;margin-top:12px;display:none;}
+  .status-line.show{display:block;}
+  .status-line.ok{background:rgba(63,184,122,0.14);color:#bdf0d3;}
+  .status-line.bad{background:rgba(232,72,60,0.14);color:#f5c3be;}
+  .status-line.wait{background:var(--surface-2);color:var(--muted);}
+
+  .checklist{margin:0 0 14px;padding:0;list-style:none;}
+  .checklist li{display:flex;gap:10px;padding:10px 0;border-bottom:1px solid var(--border);font-size:14px;}
+  .checklist li:last-child{border-bottom:none;}
+  .checklist .n{font-family:var(--mono);font-weight:700;color:var(--accent);flex:none;width:20px;}
+
+  .navbar{position:fixed;bottom:0;left:0;right:0;z-index:20;background:rgba(16,17,20,0.95);backdrop-filter:blur(10px);border-top:1px solid var(--border);padding:12px 16px calc(12px + env(safe-area-inset-bottom));}
+  .navbar-inner{max-width:640px;margin:0 auto;display:flex;gap:10px;align-items:center;}
+  .navbar .btn{flex:1;}
+  .navbar .hint{font-size:11.5px;color:var(--muted-2);text-align:center;width:100%;margin-top:6px;min-height:1em;}
+
+  @media (max-width:480px){
+    .card{padding:16px;}
+    .task-body{padding:14px;}
+    .spec .big{font-size:32px;}
+  }
+  @media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important;}}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-row">
+    <div class="brand">
+      <div class="brand-mark">Aa</div>
+      <div class="brand-text"><b>Типографика және шрифт</b> · графика және жобалау</div>
+    </div>
+    <div class="step-count" id="stepCount">1 / 1</div>
+  </div>
+  <div class="progress-track"><div class="progress-fill" id="progressFill" style="width:4%"></div></div>
+</header>
+
+<main><div class="stage" id="stage"></div></main>
+
+<div class="navbar">
+  <div class="navbar-inner">
+    <button class="btn btn-ghost" id="btnBack">Артқа</button>
+    <button class="btn btn-primary" id="btnNext" style="flex:2;">Бастау</button>
+  </div>
+  <div class="hint" id="navHint"></div>
+</div>
+
+<script>
+/* =========================================================
+   PASTE YOUR GOOGLE APPS SCRIPT WEB APP URL HERE
+========================================================= */
+const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzExtfZsOgguKfqhJYmuGw5-EPphAq7Hig9dN2sgjwYJiYcUGXOJISB1LaV6rDxy7lVRA/exec";
+
+const state = {
+  group:"", name:"", cur:0,
+  answers:{},
+  practical:"", homework:"", homeworkFonts:"", reflection:"",
+  sent:false
+};
+
+/* ===================== LECTURES ===================== */
+const LECTURES = {
+  what:{ time:"3 мин", title:"Типографика дегеніміз не?",
+    body:`
+      <p><b>Типографика</b> — мәтінді оқылымды, көркем және мағыналы етіп безендіру өнері мен техникасы. Оның бастауы XV ғасырда Гутенберг жылжымалы әріптерді енгізген кезден басталады. Бүгін типографика плакаттарда, логотиптерде, сайттарда және қосымша интерфейстерінде қолданылады.</p>
+      <div class="spec-grid">
+        <div class="spec"><div class="big f-serif">Aa</div><b>Playfair Display</b><span>serif</span></div>
+        <div class="spec"><div class="big f-sans">Aa</div><b>Manrope</b><span>sans-serif</span></div>
+        <div class="spec"><div class="big f-script">Aa</div><b>Pacifico</b><span>script</span></div>
+        <div class="spec"><div class="big f-display">Aa</div><b>Oswald</b><span>display</span></div>
+      </div>
+      <p>Екі ұғымды ажыратыңыз:</p>
+      <ul class="plain">
+        <li><b>Typeface (шрифт отбасы)</b> — ортақ дизайны бар әріптер жиыны, мысалы Lora немесе Manrope.</li>
+        <li><b>Font (шрифт нұсқасы)</b> — отбасының нақты нұсқасы: өлшемі, жуандығы, стилі (мысалы, Manrope Bold 16 px).</li>
+      </ul>
+      <div class="fact"><b>Ең басты қағида:</b> жақсы типографика «көрінбейді» — оқырман мәтіннің өзін емес, оның мазмұнын оқиды.</div>
+    `},
+  kinds:{ time:"4 мин", title:"Шрифт түрлері",
+    body:`
+      <p>Шрифттер сыртқы келбетіне және қолданылатын орнына қарай бірнеше топқа бөлінеді:</p>
+      <div class="demo-line"><small>SERIF (сызықшалы) — кітап, газет, салтанатты стиль</small><span class="f-text-serif" style="font-size:24px;">Әліппе және әдебиет</span></div>
+      <div class="demo-line"><small>SANS-SERIF (сызықшасыз) — экран, интерфейс, заманауи стиль</small><span class="f-sans" style="font-size:24px;font-weight:600;">Әліппе және әдебиет</span></div>
+      <div class="demo-line"><small>SCRIPT (қолжазба) — шақыру қағаздары, логотип</small><span class="f-script" style="font-size:24px;">Дизайн өнері</span></div>
+      <div class="demo-line"><small>DISPLAY (тақырыптық) — плакат, баннер</small><span class="f-display" style="font-size:28px;letter-spacing:.04em;">ЖАРНАМА ТАҚЫРЫБЫ</span></div>
+      <div class="demo-line"><small>MONOSPACE (тең енді) — бағдарлама коды</small><span class="f-mono" style="font-size:20px;">const color = "#d7ff3f";</span></div>
+      <div class="fact"><b>Serif</b> шрифтінде әріп штрихтарының ұштарында шағын сызықшалар болады, <b>sans-serif</b> шрифтінде олар жоқ.</div>
+    `},
+  anatomy:{ time:"4 мин", title:"Әріп анатомиясы",
+    body:`
+      <svg class="anatomy" viewBox="0 0 330 190" role="img" aria-label="Әріп анатомиясы диаграммасы">
+        <g stroke="#d7ff3f" stroke-width="1" stroke-dasharray="4 4" opacity="0.8">
+          <line x1="8" y1="55" x2="322" y2="55"/>
+          <line x1="8" y1="85" x2="322" y2="85"/>
+          <line x1="8" y1="140" x2="322" y2="140" stroke-dasharray="none" stroke-width="1.6"/>
+          <line x1="8" y1="165" x2="322" y2="165"/>
+        </g>
+        <text x="14" y="140" font-family="Lora, Georgia, serif" font-size="110" style="fill:var(--text)">dxp</text>
+        <g font-family="JetBrains Mono, monospace" font-size="10.5" text-anchor="end" style="fill:var(--muted)">
+          <text x="322" y="49">Ascender</text>
+          <text x="322" y="79">x-height</text>
+          <text x="322" y="134">Baseline</text>
+          <text x="322" y="182">Descender</text>
+        </g>
+      </svg>
+      <ul class="plain" style="margin-top:12px;">
+        <li><b>Baseline (базалық сызық)</b> — әріптер «тұратын» көрінбейтін төменгі сызық.</li>
+        <li><b>x-height</b> — кіші әріптердің негізгі денесінің биіктігі (мысалы, «x», «о»).</li>
+        <li><b>Ascender</b> — кіші әріптің x-height-тан жоғары шығып тұратын бөлігі (b, d, h).</li>
+        <li><b>Descender</b> — базалық сызықтан төмен түсетін бөлігі (p, g, y, кириллицада р, у).</li>
+        <li><b>Serif</b> — штрих ұштарындағы шағын сызықшалар.</li>
+      </ul>
+      <div class="fact"><b>Неге маңызды?</b> x-height үлкен шрифттер шағын өлшемде де оқылымды болады, сондықтан экран мәтініне жиі таңдалады.</div>
+    `},
+  spacing:{ time:"4 мин", title:"Кернинг және трекинг",
+    body:`
+      <p><b>Кернинг</b> — нақты екі әріп жұбының арасындағы қашықтықты түзету (мысалы, «AV», «To»). <b>Трекинг</b> — барлық әріптер арасындағы жалпы қашықтықты бірдей өзгерту (CSS-те <code>letter-spacing</code>).</p>
+      <div class="demo-line"><small>трекинг −0.05em (тым тығыз)</small><span class="f-sans" style="font-size:26px;font-weight:700;letter-spacing:-0.05em;">ТИПОГРАФИКА</span></div>
+      <div class="demo-line"><small>трекинг 0 (әдепкі)</small><span class="f-sans" style="font-size:26px;font-weight:700;">ТИПОГРАФИКА</span></div>
+      <div class="demo-line"><small>трекинг +0.1em (БАС әріптерге қолайлы)</small><span class="f-sans" style="font-size:26px;font-weight:700;letter-spacing:0.1em;">ТИПОГРАФИКА</span></div>
+      <div class="fact"><b>Ереже:</b> бас әріптермен жазылған қысқа тақырыпқа трекингті аздап арттыру (шамамен +5…+15%) қажет, ал үлкен тақырыптарда кейде сәл азайтады.</div>
+    `},
+  leading:{ time:"4 мин", title:"Интерлиньяж және жол ұзындығы",
+    body:`
+      <p><b>Интерлиньяж (line-height)</b> — жолдар арасындағы қашықтық. Ол қаріп өлшемінің коэффициентімен беріледі: <code>жол биіктігі = қаріп өлшемі × коэффициент</code>.</p>
+      <ul class="plain">
+        <li>Негізгі мәтін үшін: шамамен <b>1.4–1.6</b> (140–160%).</li>
+        <li>Тақырыптар үшін: шамамен <b>1.1–1.25</b>.</li>
+        <li>Тым тығыз болса — жолдар бір-біріне тиеді, тым сирек болса — жол ағыны үзіледі.</li>
+      </ul>
+      <p><b>Жол ұзындығы</b> да маңызды: оқуға ең қолайлы жол ұзындығы шамамен <b>45–75 таңба</b>. Тым ұзын жол көзді шаршатады, тым қысқа жол мәтінді бөлшектейді.</p>
+      <div class="fact"><b>Мысалы:</b> 16 px қаріп және 1.5 коэффициент → жол биіктігі 16 × 1.5 = 24 px.</div>
+    `},
+  hierarchy:{ time:"3 мин", title:"Типографикалық иерархия",
+    body:`
+      <p>Иерархия — оқырманға мәтінді қай ретпен оқу керегін көрсететін көрнекі құрылым. Ол өлшем, жуандық, түс және аралық арқылы құрылады.</p>
+      <div class="card" style="background:var(--surface-2);">
+        <div class="f-sans" style="font-size:30px;font-weight:800;line-height:1.15;">Негізгі тақырып (H1)</div>
+        <div class="f-sans" style="font-size:21px;font-weight:600;line-height:1.25;margin-top:8px;color:var(--accent);">Қосалқы тақырып (H2)</div>
+        <div class="f-text-serif" style="font-size:16px;line-height:1.55;margin-top:10px;">Негізгі мәтін (Body) — оқырман ең көп оқитын бөлік, сондықтан оқылымды өлшемде болуы керек.</div>
+        <div class="f-sans" style="font-size:12.5px;line-height:1.4;margin-top:10px;color:var(--muted);">Сурет астындағы жазу (Caption)</div>
+      </div>
+      <div class="fact"><b>Шамамен шкала:</b> H1 — 32–40 px, H2 — 24 px, Body — 16 px, Caption — 12–13 px. Әр деңгей алдыңғысынан анық айырмашылық беруі керек.</div>
+    `},
+  readable:{ time:"4 мин", title:"Оқылымдылық және шрифт жұптастыру",
+    body:`
+      <p><b>Оқылымдылықты</b> арттыратын негізгі қағидалар:</p>
+      <ul class="plain">
+        <li>Мәтін мен фон арасында <b>жоғары контраст</b> болуы керек (негізгі мәтін үшін кемінде 4.5:1).</li>
+        <li>Негізгі мәтін экранда кемінде <b>16 px</b> болғаны жөн.</li>
+        <li>Ұзын мәтінді толығымен <b>БАС ӘРІППЕН</b> немесе <i>курсивпен</i> жазбаңыз — оқу қиындайды.</li>
+        <li>Ұзын мәтінді әдетте <b>солға туралаңыз</b>.</li>
+      </ul>
+      <p><b>Шрифттерді жұптастыру:</b></p>
+      <ul class="plain">
+        <li>Бір жобада <b>2–3 шрифттен</b> артық қолданбаңыз.</li>
+        <li>Контрастты жұп: тақырып — serif, мәтін — sans-serif (немесе керісінше).</li>
+        <li>Қауіпсіз тәсіл: бір отбасының әр түрлі жуандығын қолдану.</li>
+      </ul>
+    `},
+  kazakh:{ time:"3 мин", title:"Қазақ әріптері және веб-шрифттер",
+    body:`
+      <p>Қазақ тілінде кириллицаның стандартты әріптерінен басқа арнайы әріптер бар: <b>ә, і, ң, ғ, ү, ұ, қ, ө, һ</b>. Барлық шрифт оларды қолдай бермейді — қолдамаса, әріптер шаршы (□) болып немесе басқа шрифтпен ауыстырылып көрінеді.</p>
+      <div class="demo-line"><small>Lora</small><span class="f-text-serif" style="font-size:20px;">Ә ә І і Ң ң Ғ ғ Ү ү Ұ ұ Қ қ Ө ө Һ һ</span></div>
+      <div class="demo-line"><small>Manrope</small><span class="f-sans" style="font-size:20px;">Ә ә І і Ң ң Ғ ғ Ү ү Ұ ұ Қ қ Ө ө Һ һ</span></div>
+      <div class="demo-line"><small>PT Serif</small><span style="font-family:'PT Serif',serif;font-size:20px;">Ә ә І і Ң ң Ғ ғ Ү ү Ұ ұ Қ қ Ө ө Һ һ</span></div>
+      <div class="fact"><b>Практикалық кеңес:</b> Google Fonts-та шрифт таңдағанда «Cyrillic» тілін таңдап, өз мәтініңізді жазып тексеріңіз. Веб-бетте әрдайым қосалқы шрифттер тізімін (fallback) көрсетіңіз.</div>
+    `}
+};
+
+/* ===================== TASKS ===================== */
+const TASKS = [
+  { id:1, type:"mcq", time:"2 мин",
+    q:"«Шрифт отбасы» (typeface) дегеніміз не?",
+    options:[
+      "Тек қалың (Bold) жазылған мәтін нұсқасы",
+      "Ортақ дизайны бар әріптер отбасы (мысалы, Lora, Manrope); оның Regular, Bold сияқты нұсқалары font деп аталады",
+      "Принтердің түрі",
+      "Мәтіннің түсі"
+    ],
+    correct:1,
+    explain:"Typeface — дизайны ортақ әріптер отбасы, ал font — оның нақты нұсқасы (жуандығы, өлшемі, стилі)."
+  },
+  { id:2, type:"classify", time:"3 мин",
+    q:"Әр шрифттің қай топқа жататынын белгілеңіз (әріп пішініне қараңыз).",
+    labelA:"Serif", labelB:"Sans-serif",
+    items:[
+      {txt:"Playfair Display", font:"'Playfair Display',serif", ans:"a"},
+      {txt:"Manrope", font:"'Manrope',sans-serif", ans:"b"},
+      {txt:"Lora", font:"'Lora',serif", ans:"a"},
+      {txt:"Oswald", font:"'Oswald',sans-serif", ans:"b"},
+      {txt:"PT Serif", font:"'PT Serif',serif", ans:"a"},
+      {txt:"Inter", font:"'Inter',sans-serif", ans:"b"}
+    ]
+  },
+  { id:3, type:"match", time:"3 мин",
+    q:"Әр терминге дұрыс анықтаманы сәйкестендіріңіз.",
+    terms:["Baseline","x-height","Descender","Serif"],
+    correctDesc:[
+      "Әріптер «тұратын» көрінбейтін төменгі сызық",
+      "Кіші әріптердің негізгі денесінің биіктігі",
+      "Кіші әріптің базалық сызықтан төмен түсетін бөлігі (p, g, y)",
+      "Әріп штрихтарының ұштарындағы шағын сызықшалар"
+    ]
+  },
+  { id:4, type:"tune", time:"3 мин",
+    q:"БАС ӘРІППЕН жазылған тақырып үшін трекингті (letter-spacing) реттеңіз: мәтін оқылымды болсын, әріптер тым тығыз да, тым алшақ та болмасын.",
+    sample:"ТИПОГРАФИКА",
+    sampleStyle:"font-family:'Manrope',sans-serif;font-weight:800;font-size:clamp(26px,8vw,40px);",
+    prop:"letterSpacing", unit:"em", min:-0.1, max:0.5, step:0.01, start:-0.05, ideal:[0.05,0.15],
+    label:"letter-spacing",
+    explain:"Бас әріптерге трекингті шамамен +0.05…+0.15em дейін арттыру оқылымдылықты жақсартады."
+  },
+  { id:5, type:"tune", time:"2 мин",
+    q:"Негізгі мәтін үшін интерлиньяжды (line-height) реттеңіз, мәтін жайлы оқылсын.",
+    sample:"Типографика — мәтінді оқылымды және көркем ету өнері. Дұрыс таңдалған жол аралығы көзге демалу береді, ал тым тығыз немесе тым сирек жолдар оқуды қиындатады.",
+    sampleStyle:"font-family:'Lora',serif;font-size:16px;",
+    prop:"lineHeight", unit:"", min:0.8, max:2.4, step:0.05, start:1.0, ideal:[1.4,1.6],
+    label:"line-height",
+    explain:"Негізгі мәтін үшін қолайлы интерлиньяж шамамен 1.4–1.6."
+  },
+  { id:6, type:"order", time:"3 мин",
+    q:"Мәтін элементтерін ең үлкеннен ең кішіге қарай (иерархия бойынша) орналастырыңыз.",
+    correctOrder:[
+      "Негізгі тақырып (H1)",
+      "Қосалқы тақырып (H2)",
+      "Негізгі мәтін (Body)",
+      "Сурет астындағы жазу (Caption)"
+    ]
+  },
+  { id:7, type:"number", time:"2 мин",
+    q:"Қаріп өлшемі 16 px, интерлиньяж коэффициенті 1.5 (150%). Жол биіктігі (line-height) неше px болады?",
+    answer:24, unitHint:"px"
+  },
+  { id:8, type:"tf", time:"3 мин",
+    q:"Дұрыс па, бұрыс па?",
+    statements:[
+      {s:"Sans-serif шрифтерінде әріп ұштарында сызықшалар (serif) болады.", correct:false},
+      {s:"Кернинг — нақты екі әріп жұбының арасындағы қашықтықты түзету.", correct:true},
+      {s:"Ұзақ мәтінді толығымен БАС ӘРІППЕН жазу оқуды жеңілдетеді.", correct:false},
+      {s:"Мәтін мен фон контрасты жоғары болған сайын оқылымдылық артады.", correct:true},
+      {s:"Бір жобада әдетте 2–3 шрифттен артық қолданбаған жөн.", correct:true}
+    ]
+  },
+  { id:9, type:"multi", time:"3 мин",
+    q:"Веб-беттегі негізгі мәтінді оқылымды ету үшін қандай ережелерді сақтау керек? (3 дұрыс жауапты таңдаңыз)",
+    options:[
+      "Мәтін мен фон арасында жоғары контраст болуы керек",
+      "Негізгі мәтін үшін кемінде шамамен 16 px өлшем қолдану",
+      "Жол ұзындығын шамамен 45–75 таңбамен шектеу",
+      "Әсем көріну үшін 6–7 түрлі шрифтті араластыру",
+      "Ұзын абзацтарды толығымен курсивпен жазу"
+    ],
+    correctIdx:[0,1,2]
+  },
+  { id:10, type:"mcq", time:"2 мин",
+    q:"Қазақ тіліндегі мәтін үшін шрифт таңдағанда ең алдымен нені тексеру керек?",
+    options:[
+      "Тек шрифттің әдемі көрінетінін",
+      "Оның қазақ әріптерін (ә, і, ң, ғ, ү, ұ, қ, ө, һ) қолдайтынын",
+      "Тек шрифт файлының көлемін",
+      "Тек шрифт атауының ағылшынша болуын"
+    ],
+    correct:1,
+    explain:"Шрифт қазақ әріптерін қолдамаса, олар шаршы (□) болып немесе басқа шрифтпен ауыстырылып көрінеді."
+  }
+];
+
+/* ===================== STEPS ===================== */
+const steps = [
+  {type:"start"},
+  {type:"lecture", key:"what"},     {type:"task", task:TASKS[0]},
+  {type:"lecture", key:"kinds"},    {type:"task", task:TASKS[1]},
+  {type:"lecture", key:"anatomy"},  {type:"task", task:TASKS[2]},
+  {type:"lecture", key:"spacing"},  {type:"task", task:TASKS[3]},
+  {type:"lecture", key:"leading"},  {type:"task", task:TASKS[4]}, {type:"task", task:TASKS[6]},
+  {type:"lecture", key:"hierarchy"},{type:"task", task:TASKS[5]},
+  {type:"lecture", key:"readable"}, {type:"task", task:TASKS[7]}, {type:"task", task:TASKS[8]},
+  {type:"lecture", key:"kazakh"},   {type:"task", task:TASKS[9]},
+  {type:"practical"},
+  {type:"homework"},
+  {type:"reflection"},
+  {type:"results"}
+];
+
+const stageEl = document.getElementById('stage');
+const btnBack = document.getElementById('btnBack');
+const btnNext = document.getElementById('btnNext');
+const navHint = document.getElementById('navHint');
+const stepCountEl = document.getElementById('stepCount');
+const progressFillEl = document.getElementById('progressFill');
+
+function esc(str){ return String(str).replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m])); }
+function kicker(n, time, title){ return `<div class="kicker"><span class="num">${n}</span><span>Бөлім</span><span>· ${time}</span></div><h2>${title}</h2>`; }
+
+/* ===================== RENDER ===================== */
+function render(){
+  const step = steps[state.cur];
+  stageEl.innerHTML = "";
+  stepCountEl.textContent = `${state.cur+1} / ${steps.length}`;
+  progressFillEl.style.width = Math.round(((state.cur+1)/steps.length)*100) + "%";
+
+  if(step.type === "start") renderStart();
+  else if(step.type === "lecture") renderLecture(step.key);
+  else if(step.type === "task") renderTask(step.task);
+  else if(step.type === "practical") renderPractical();
+  else if(step.type === "homework") renderHomework();
+  else if(step.type === "reflection") renderReflection();
+  else if(step.type === "results") renderResults();
+
+  updateNav();
+  window.scrollTo({top:0});
+}
+
+function updateNav(){
+  const step = steps[state.cur];
+  btnBack.style.visibility = state.cur === 0 ? "hidden" : "visible";
+  navHint.textContent = "";
+  if(step.type === "start"){
+    btnNext.textContent = "Бастау";
+    btnNext.disabled = !(state.group.trim() && state.name.trim());
+    navHint.textContent = btnNext.disabled ? "Жалғастыру үшін топ пен атыңызды енгізіңіз" : "";
+  } else if(step.type === "task"){
+    const done = !!state.answers[step.task.id];
+    btnNext.textContent = "Келесі";
+    btnNext.disabled = !done;
+    navHint.textContent = done ? "" : "Жалғастыру үшін тапсырманы тексеріңіз";
+  } else if(step.type === "results"){
+    btnNext.textContent = state.sent ? "Аяқталды ✓" : (state.sending ? "Жіберілуде..." : "Нәтижені жіберу");
+    btnNext.disabled = !!(state.sent || state.sending);
+  } else {
+    btnNext.textContent = "Келесі";
+    btnNext.disabled = false;
+  }
+}
+
+/* ---------- START ---------- */
+function renderStart(){
+  stageEl.innerHTML = `
+    ${kicker(1,"80 минут","Типографика және шрифт")}
+    <p class="lede">Бұл сабақта сіз шрифт түрлерімен, әріп анатомиясымен, кернинг пен трекингпен, интерлиньяжбен, иерархиямен және қазақ әріптерін дұрыс көрсету ережелерімен танысасыз. 10 интерактивті тапсырма — шрифттерді нақты көріп, реттеп орындайсыз.</p>
+    <div class="card">
+      <div class="field">
+        <label for="inpGroup">Оқу тобы</label>
+        <input type="text" id="inpGroup" placeholder="мысалы, Д-21" value="${esc(state.group)}">
+      </div>
+      <div class="field" style="margin-bottom:0;">
+        <label for="inpName">Аты-жөніңіз</label>
+        <input type="text" id="inpName" placeholder="мысалы, Асан Асанов" value="${esc(state.name)}">
+      </div>
+    </div>
+    <div class="fact"><b>Сабақ жоспары:</b> 8 қысқа теориялық блок (әрқайсысынан кейін тапсырма), практикалық дизайн-сессия, үй тапсырмасы және рефлексия. Нәтиже соңында мұғалімнің Google Кестесіне жіберіледі.</div>
+  `;
+  document.getElementById('inpGroup').addEventListener('input', e => { state.group = e.target.value; updateNav(); });
+  document.getElementById('inpName').addEventListener('input', e => { state.name = e.target.value; updateNav(); });
+}
+
+function renderLecture(key){
+  const l = LECTURES[key];
+  const n = Object.keys(LECTURES).indexOf(key)+1;
+  stageEl.innerHTML = `${kicker("Л"+n, l.time, l.title)}<div class="card">${l.body}</div>`;
+}
+
+function renderPractical(){
+  stageEl.innerHTML = `
+    ${kicker("П","15 мин","Практикалық дизайн-сессия")}
+    <p class="lede">Компьютерде немесе телефоныңызда (Canva, Figma, Adobe Express) типографикалық плакат немесе дәйексөз-карточка жасаңыз.</p>
+    <div class="card">
+      <ul class="checklist">
+        <li><span class="n">1</span><span>Мектеп іс-шарасына плакат немесе өзіңіз ұнататын дәйексөз-карточка жасаңыз.</span></li>
+        <li><span class="n">2</span><span>Тек <b>екі шрифт</b> таңдаңыз (тақырыпқа және негізгі мәтінге) және олардың қазақ әріптерін қолдайтынын тексеріңіз.</span></li>
+        <li><span class="n">3</span><span>Үш деңгейлі иерархия құрыңыз: тақырып, қосалқы тақырып, негізгі мәтін.</span></li>
+        <li><span class="n">4</span><span>Трекинг пен интерлиньяжды реттеп, мәтін мен фон контрастын тексеріңіз.</span></li>
+      </ul>
+      <div class="field" style="margin-bottom:0;">
+        <label for="practicalText">Не жасадыңыз? Қай құралды және қандай шрифттерді қолдандыңыз?</label>
+        <textarea id="practicalText" placeholder="Мысалы: Canva-да плакат жасадым, тақырыпқа Playfair Display, мәтінге Manrope таңдадым...">${esc(state.practical)}</textarea>
+      </div>
+    </div>`;
+  document.getElementById('practicalText').addEventListener('input', e=>{ state.practical = e.target.value; });
+}
+
+function renderHomework(){
+  stageEl.innerHTML = `
+    ${kicker("ҮТ","3 мин","Үй тапсырмасы")}
+    <p class="lede">Жеке визитка немесе оқиға плакаты — типографикалық жоба.</p>
+    <div class="card">
+      <ul class="checklist">
+        <li><span class="n">1</span><span>Өзіңіздің жеке визиткаңызды немесе мектеп/колледж іс-шарасының плакатын жасаңыз (компьютерде немесе телефонда).</span></li>
+        <li><span class="n">2</span><span>Ең көбі <b>2 шрифт</b> қолданыңыз; қазақ әріптерінің дұрыс көрінетінін тексеріңіз.</span></li>
+        <li><span class="n">3</span><span>Жұмысты <code>.PNG</code> немесе <code>.PDF</code> түрінде сақтап, электронды портфолиоға жүктеңіз.</span></li>
+        <li><span class="n">4</span><span>Қолданылған шрифттер мен олардың өлшемдерін төменде жазыңыз.</span></li>
+      </ul>
+      <div class="field">
+        <label for="hwText">Жоба сипаттамасы / портфолио сілтемесі</label>
+        <textarea id="hwText" placeholder="Мысалы: колледж күніне плакат жасадым, тақырыптық шрифт пен негізгі мәтін шрифті...">${esc(state.homework)}</textarea>
+      </div>
+      <div class="field" style="margin-bottom:0;">
+        <label for="hwFonts">Қолданылған шрифттер мен өлшемдер</label>
+        <input type="text" id="hwFonts" placeholder="мысалы, Playfair Display 40 px, Manrope 16 px" value="${esc(state.homeworkFonts)}">
+      </div>
+    </div>`;
+  document.getElementById('hwText').addEventListener('input', e=>{ state.homework = e.target.value; });
+  document.getElementById('hwFonts').addEventListener('input', e=>{ state.homeworkFonts = e.target.value; });
+}
+
+function renderReflection(){
+  stageEl.innerHTML = `
+    ${kicker("Р","4 мин","Қорытындылау және рефлексия")}
+    <p class="lede">Сабақ соңында жасалған жұмыстар бірге талқыланады: иерархия анық па, мәтін оқылымды ма, қазақ әріптері дұрыс көрінеді ме.</p>
+    <div class="card">
+      <div class="field" style="margin-bottom:0;">
+        <label for="reflText">Бүгінгі сабақтан алған ең маңызды түйінді бір-екі сөйлеммен жазыңыз</label>
+        <textarea id="reflText" placeholder="Мысалы: мәтіннің оқылымдылығы шрифт таңдауына ғана емес, интерлиньяж мен контрастқа да байланысты екенін түсіндім...">${esc(state.reflection)}</textarea>
+      </div>
+    </div>`;
+  document.getElementById('reflText').addEventListener('input', e=>{ state.reflection = e.target.value; });
+}
+
+/* ---------- TASK DISPATCH ---------- */
+const HTML_BY_TYPE = {};
+const WIRE_BY_TYPE = {};
+
+function renderTask(task){
+  stageEl.innerHTML = `${kicker(task.id, task.time, "Тапсырма "+task.id)}`;
+  const wrap = document.createElement('div');
+  wrap.className = "task-card";
+  wrap.innerHTML = HTML_BY_TYPE[task.type](task);
+  stageEl.appendChild(wrap);
+  WIRE_BY_TYPE[task.type](task, wrap);
+  if(state.answers[task.id]) showLockedFeedback(task, wrap);
+}
+
+function taskHead(task, title){ return `<div class="task-head"><span class="task-badge">T${task.id}</span><h3>${title}</h3></div>`; }
+function feedbackBlock(){ return `<div class="feedback" id="fb"></div>`; }
+function setFeedback(wrap, cls, scoreText, msg){
+  const fb = wrap.querySelector('#fb');
+  fb.className = "feedback show " + cls;
+  fb.innerHTML = `<span class="score">${scoreText}</span>${msg}`;
+}
+function recordAnswer(taskId, score, max, detail){ state.answers[taskId] = {score, max, detail}; updateNav(); }
+function clsFor(score){ return score>=8?"ok":score>=4?"mid":"bad"; }
+
+/* ----- MCQ ----- */
+HTML_BY_TYPE.mcq = task => taskHead(task,"Бір дұрыс жауапты таңдаңыз") + `
+  <div class="task-body">
+    <p class="q">${task.q}</p>
+    <div class="opt-list">
+      ${task.options.map((o,i)=>`<button class="opt circle" data-i="${i}"><span class="mark"></span><span>${o}</span></button>`).join('')}
+    </div>
+    ${feedbackBlock()}
+    <div class="btn-row"><button class="btn btn-good btn-block" id="checkBtn" disabled>Тексеру</button></div>
+  </div>`;
+WIRE_BY_TYPE.mcq = (task, wrap) => {
+  let picked = -1;
+  const opts = [...wrap.querySelectorAll('.opt')];
+  const checkBtn = wrap.querySelector('#checkBtn');
+  opts.forEach(btn=>btn.addEventListener('click', ()=>{
+    if(btn.disabled) return;
+    picked = +btn.dataset.i;
+    opts.forEach(o=>o.classList.remove('selected'));
+    btn.classList.add('selected');
+    checkBtn.disabled = false;
+  }));
+  checkBtn.addEventListener('click', ()=>{
+    opts.forEach(o=>o.disabled=true);
+    checkBtn.disabled = true;
+    const ok = picked === task.correct;
+    opts[task.correct].classList.add('correct');
+    if(!ok) opts[picked].classList.add('wrong');
+    setFeedback(wrap, ok?"ok":"bad", ok?"10 / 10 ұпай":"0 / 10 ұпай", task.explain);
+    recordAnswer(task.id, ok?10:0, 10, task.options[picked]);
+  });
+};
+
+/* ----- CLASSIFY ----- */
+HTML_BY_TYPE.classify = task => taskHead(task,`${task.labelA} немесе ${task.labelB}`) + `
+  <div class="task-body">
+    <p class="q">${task.q}</p>
+    ${task.items.map((it,i)=>`
+      <div class="classify-item" data-i="${i}">
+        <div class="txt" style="font-family:${it.font}">${it.txt}</div>
+        <div class="pill-row">
+          <button class="pill" data-v="a">${task.labelA}</button>
+          <button class="pill" data-v="b">${task.labelB}</button>
+        </div>
+      </div>`).join('')}
+    ${feedbackBlock()}
+    <div class="btn-row"><button class="btn btn-good btn-block" id="checkBtn" disabled>Тексеру</button></div>
+  </div>`;
+WIRE_BY_TYPE.classify = (task, wrap) => {
+  const picks = new Array(task.items.length).fill(null);
+  const rows = [...wrap.querySelectorAll('.classify-item')];
+  const checkBtn = wrap.querySelector('#checkBtn');
+  rows.forEach((row,i)=>{
+    row.querySelectorAll('.pill').forEach(p=>p.addEventListener('click', ()=>{
+      if(p.disabled) return;
+      picks[i] = p.dataset.v;
+      row.querySelectorAll('.pill').forEach(x=>x.classList.remove('sel-a','sel-b'));
+      p.classList.add(p.dataset.v==='a'?'sel-a':'sel-b');
+      checkBtn.disabled = picks.includes(null);
+    }));
+  });
+  checkBtn.addEventListener('click', ()=>{
+    let correctCount = 0;
+    rows.forEach((row,i)=>{
+      const pills = [...row.querySelectorAll('.pill')];
+      pills.forEach(p=>p.disabled=true);
+      const isRight = picks[i] === task.items[i].ans;
+      if(isRight) correctCount++;
+      pills.find(p=>p.dataset.v===picks[i]).classList.add(isRight?'right':'wrong');
+      if(!isRight) pills.find(p=>p.dataset.v===task.items[i].ans).classList.add('right');
+    });
+    checkBtn.disabled = true;
+    const score = Math.round(correctCount/task.items.length*10);
+    setFeedback(wrap, clsFor(score), `${score} / 10 ұпай`, `${correctCount} / ${task.items.length} дұрыс жауап. Serif шрифтерінде әріп ұштарында сызықшалар болады.`);
+    recordAnswer(task.id, score, 10, `${correctCount}/${task.items.length}`);
+  });
+};
+
+/* ----- MATCH ----- */
+HTML_BY_TYPE.match = task => {
+  const shuffled = [...task.correctDesc].sort(()=>Math.random()-0.5);
+  window.__matchOptions = window.__matchOptions || {};
+  window.__matchOptions[task.id] = shuffled;
+  return taskHead(task,"Терминдер мен анықтамаларды сәйкестендіріңіз") + `
+    <div class="task-body">
+      <p class="q">${task.q}</p>
+      ${task.terms.map((term,i)=>`
+        <div class="match-item">
+          <div class="term"><span class="chip">${term}</span></div>
+          <select data-i="${i}">
+            <option value="">— анықтаманы таңдаңыз —</option>
+            ${shuffled.map((d,j)=>`<option value="${j}">${d}</option>`).join('')}
+          </select>
+        </div>`).join('')}
+      ${feedbackBlock()}
+      <div class="btn-row"><button class="btn btn-good btn-block" id="checkBtn">Тексеру</button></div>
+    </div>`;
+};
+WIRE_BY_TYPE.match = (task, wrap) => {
+  const selects = [...wrap.querySelectorAll('select')];
+  const shuffled = window.__matchOptions[task.id];
+  wrap.querySelector('#checkBtn').addEventListener('click', ()=>{
+    let correctCount = 0;
+    selects.forEach((sel,i)=>{
+      sel.disabled = true;
+      const chosenText = sel.value === "" ? "" : shuffled[+sel.value];
+      const isRight = chosenText === task.correctDesc[i];
+      if(isRight) correctCount++;
+      sel.style.borderColor = isRight ? "var(--good)" : "var(--bad)";
+    });
+    wrap.querySelector('#checkBtn').disabled = true;
+    const score = Math.round(correctCount/task.terms.length*10);
+    setFeedback(wrap, clsFor(score), `${score} / 10 ұпай`, `${correctCount} / ${task.terms.length} дұрыс сәйкестік. Диаграммаға қайта оралу үшін «Артқа» батырмасын басыңыз.`);
+    recordAnswer(task.id, score, 10, `${correctCount}/${task.terms.length}`);
+  });
+};
+
+/* ----- TUNE (slider with live typography preview) ----- */
+HTML_BY_TYPE.tune = task => taskHead(task,"Сырғытпаны реттеңіз") + `
+  <div class="task-body">
+    <p class="q">${task.q}</p>
+    <div class="preview-box"><div id="prevText" style="${task.sampleStyle}">${task.sample}</div></div>
+    <div class="slider-row">
+      <div class="slabel"><span>${task.label}</span><span id="tVal"></span></div>
+      <input type="range" id="tSlider" min="${task.min}" max="${task.max}" step="${task.step}" value="${task.start}">
+    </div>
+    ${feedbackBlock()}
+    <div class="btn-row"><button class="btn btn-good btn-block" id="checkBtn">Тексеру</button></div>
+  </div>`;
+WIRE_BY_TYPE.tune = (task, wrap) => {
+  const slider = wrap.querySelector('#tSlider');
+  const prev = wrap.querySelector('#prevText');
+  const val = wrap.querySelector('#tVal');
+  function upd(){
+    const v = parseFloat(slider.value);
+    prev.style[task.prop] = v + task.unit;
+    val.textContent = v.toFixed(2) + task.unit;
+  }
+  slider.addEventListener('input', upd);
+  upd();
+  wrap.querySelector('#checkBtn').addEventListener('click', ()=>{
+    const v = parseFloat(slider.value);
+    const [lo, hi] = task.ideal;
+    const d = v < lo ? lo - v : v > hi ? v - hi : 0;
+    const span = task.max - task.min;
+    const score = d === 0 ? 10 : Math.max(0, Math.round(10 * (1 - (d/span)*5)));
+    slider.disabled = true;
+    wrap.querySelector('#checkBtn').disabled = true;
+    setFeedback(wrap, clsFor(score), `${score} / 10 ұпай`, `Сіз таңдаған мән: ${v.toFixed(2)}${task.unit}. Қолайлы аралық: ${lo}–${hi}${task.unit}. ${task.explain}`);
+    recordAnswer(task.id, score, 10, `${v.toFixed(2)}${task.unit}`);
+  });
+};
+
+/* ----- ORDER ----- */
+HTML_BY_TYPE.order = task => {
+  window.__orderState = window.__orderState || {};
+  window.__orderState[task.id] = [...task.correctOrder].sort(()=>Math.random()-0.5);
+  return taskHead(task,"Ретін реттеңіз") + `
+    <div class="task-body">
+      <p class="q">${task.q}</p>
+      <div id="orderList"></div>
+      ${feedbackBlock()}
+      <div class="btn-row"><button class="btn btn-good btn-block" id="checkBtn">Тексеру</button></div>
+    </div>`;
+};
+function renderOrderList(task, wrap){
+  const list = window.__orderState[task.id];
+  const container = wrap.querySelector('#orderList');
+  container.innerHTML = list.map((txt,i)=>`
+    <div class="order-item">
+      <div class="idx">${i+1}</div>
+      <div class="txt">${txt}</div>
+      <div class="order-btns">
+        <button data-dir="up" data-i="${i}" ${i===0?'disabled':''}>↑</button>
+        <button data-dir="down" data-i="${i}" ${i===list.length-1?'disabled':''}>↓</button>
+      </div>
+    </div>`).join('');
+  container.querySelectorAll('button').forEach(b=>b.addEventListener('click', ()=>{
+    const i = +b.dataset.i;
+    const j = b.dataset.dir==='up' ? i-1 : i+1;
+    if(j<0 || j>=list.length) return;
+    [list[i],list[j]] = [list[j],list[i]];
+    renderOrderList(task, wrap);
+  }));
+}
+WIRE_BY_TYPE.order = (task, wrap) => {
+  renderOrderList(task, wrap);
+  wrap.querySelector('#checkBtn').addEventListener('click', ()=>{
+    const list = window.__orderState[task.id];
+    let correctPos = 0;
+    list.forEach((txt,i)=>{ if(txt === task.correctOrder[i]) correctPos++; });
+    wrap.querySelectorAll('.order-btns button').forEach(b=>b.disabled=true);
+    wrap.querySelector('#checkBtn').disabled = true;
+    const score = Math.round(correctPos/task.correctOrder.length*10);
+    setFeedback(wrap, clsFor(score), `${score} / 10 ұпай`, `${correctPos} / ${task.correctOrder.length} элемент дұрыс орында тұр.`);
+    recordAnswer(task.id, score, 10, list.join(" > "));
+  });
+};
+
+/* ----- NUMBER ----- */
+HTML_BY_TYPE.number = task => taskHead(task,"Санды есептеп жазыңыз") + `
+  <div class="task-body">
+    <p class="q">${task.q}</p>
+    <div class="field" style="margin-top:12px;">
+      <input type="text" inputmode="decimal" id="numInput" placeholder="Жауабыңыз (${task.unitHint||''})">
+    </div>
+    ${feedbackBlock()}
+    <div class="btn-row"><button class="btn btn-good btn-block" id="checkBtn">Тексеру</button></div>
+  </div>`;
+WIRE_BY_TYPE.number = (task, wrap) => {
+  const input = wrap.querySelector('#numInput');
+  wrap.querySelector('#checkBtn').addEventListener('click', ()=>{
+    const v = parseFloat((input.value||"").replace(',', '.'));
+    const ok = v === task.answer;
+    input.disabled = true;
+    wrap.querySelector('#checkBtn').disabled = true;
+    setFeedback(wrap, ok?"ok":"bad", ok?"10 / 10 ұпай":"0 / 10 ұпай", ok ? "Дұрыс! 16 × 1.5 = 24 px." : `Дұрыс жауап: ${task.answer} ${task.unitHint||''} (16 × 1.5 = 24).`);
+    recordAnswer(task.id, ok?10:0, 10, input.value);
+  });
+};
+
+/* ----- TRUE/FALSE ----- */
+HTML_BY_TYPE.tf = task => taskHead(task,"Ақиқат немесе жалған") + `
+  <div class="task-body">
+    <p class="q">${task.q}</p>
+    ${task.statements.map((st,i)=>`
+      <div class="tf-item" data-i="${i}">
+        <div class="stmt">${st.s}</div>
+        <div class="tf-btns">
+          <button class="tf-btn" data-v="true">Ақиқат</button>
+          <button class="tf-btn" data-v="false">Жалған</button>
+        </div>
+      </div>`).join('')}
+    ${feedbackBlock()}
+    <div class="btn-row"><button class="btn btn-good btn-block" id="checkBtn" disabled>Тексеру</button></div>
+  </div>`;
+WIRE_BY_TYPE.tf = (task, wrap) => {
+  const picks = new Array(task.statements.length).fill(null);
+  const items = [...wrap.querySelectorAll('.tf-item')];
+  const checkBtn = wrap.querySelector('#checkBtn');
+  items.forEach((item,i)=>{
+    item.querySelectorAll('.tf-btn').forEach(b=>b.addEventListener('click', ()=>{
+      if(b.disabled) return;
+      picks[i] = b.dataset.v === 'true';
+      item.querySelectorAll('.tf-btn').forEach(x=>x.classList.remove('sel-true','sel-false'));
+      b.classList.add(b.dataset.v==='true'?'sel-true':'sel-false');
+      checkBtn.disabled = picks.includes(null);
+    }));
+  });
+  checkBtn.addEventListener('click', ()=>{
+    let correctCount = 0;
+    items.forEach((item,i)=>{
+      const btns = [...item.querySelectorAll('.tf-btn')];
+      btns.forEach(b=>b.disabled=true);
+      const isRight = picks[i] === task.statements[i].correct;
+      if(isRight) correctCount++;
+      btns.find(b=>(b.dataset.v==='true')===picks[i]).classList.add(isRight?'right':'wrong');
+      if(!isRight) btns.find(b=>(b.dataset.v==='true')===task.statements[i].correct).classList.add('right');
+    });
+    checkBtn.disabled = true;
+    const score = Math.round(correctCount/task.statements.length*10);
+    setFeedback(wrap, clsFor(score), `${score} / 10 ұпай`, `${correctCount} / ${task.statements.length} дұрыс жауап берілді.`);
+    recordAnswer(task.id, score, 10, `${correctCount}/${task.statements.length}`);
+  });
+};
+
+/* ----- MULTI ----- */
+HTML_BY_TYPE.multi = task => taskHead(task,"Дұрыс жауаптарды белгілеңіз") + `
+  <div class="task-body">
+    <p class="q">${task.q}</p>
+    <div class="opt-list">
+      ${task.options.map((o,i)=>`<button class="opt" data-i="${i}"><span class="mark"></span><span>${o}</span></button>`).join('')}
+    </div>
+    ${feedbackBlock()}
+    <div class="btn-row"><button class="btn btn-good btn-block" id="checkBtn">Тексеру</button></div>
+  </div>`;
+WIRE_BY_TYPE.multi = (task, wrap) => {
+  const picked = new Set();
+  const opts = [...wrap.querySelectorAll('.opt')];
+  opts.forEach(btn=>btn.addEventListener('click', ()=>{
+    if(btn.disabled) return;
+    const i = +btn.dataset.i;
+    if(picked.has(i)){ picked.delete(i); btn.classList.remove('selected'); }
+    else { picked.add(i); btn.classList.add('selected'); }
+  }));
+  wrap.querySelector('#checkBtn').addEventListener('click', ()=>{
+    opts.forEach(o=>o.disabled=true);
+    wrap.querySelector('#checkBtn').disabled = true;
+    const correctSet = new Set(task.correctIdx);
+    let cs = 0, ws = 0;
+    opts.forEach((btn,i)=>{
+      const isC = correctSet.has(i), isP = picked.has(i);
+      btn.classList.remove('selected');
+      if(isP && isC){ cs++; btn.classList.add('correct'); }
+      else if(isP && !isC){ ws++; btn.classList.add('wrong'); }
+      else if(!isP && isC){ btn.classList.add('correct'); }
+    });
+    const score = Math.max(0, Math.min(10, Math.round(((cs-ws)/correctSet.size)*10)));
+    setFeedback(wrap, clsFor(score), `${score} / 10 ұпай`, `${cs} / ${correctSet.size} дұрыс жауап табылды${ws?`, ${ws} қате таңдау бар`:''}.`);
+    recordAnswer(task.id, score, 10, `${cs}/${correctSet.size} дұрыс`);
+  });
+};
+
+/* ----- LOCKED FEEDBACK ON REVISIT ----- */
+function showLockedFeedback(task, wrap){
+  const a = state.answers[task.id];
+  wrap.querySelectorAll('button, input, select').forEach(el=>{ if(el.id !== 'checkBtn') el.disabled = true; });
+  const checkBtn = wrap.querySelector('#checkBtn');
+  if(checkBtn){ checkBtn.disabled = true; checkBtn.textContent = "Тексерілді"; }
+  const fb = wrap.querySelector('#fb');
+  if(fb){
+    fb.className = "feedback show " + clsFor(a.score);
+    fb.innerHTML = `<span class="score">${a.score} / ${a.max} ұпай</span>Бұл тапсырма тексерілді.`;
+  }
+}
+
+/* ---------- RESULTS ---------- */
+function totals(){
+  let total = 0, max = 0;
+  TASKS.forEach(t=>{ const a = state.answers[t.id]; total += a ? a.score : 0; max += 10; });
+  return {total, max};
+}
+function renderResults(){
+  const {total, max} = totals();
+  const rows = TASKS.map(t=>{
+    const a = state.answers[t.id];
+    return `<tr><td>Тапсырма ${t.id}</td><td class="sc">${a? a.score : 0} / 10</td></tr>`;
+  }).join('');
+  stageEl.innerHTML = `
+    ${kicker("✓","қорытынды","Нәтиже және жіберу")}
+    <p class="lede">${esc(state.name)} (${esc(state.group)}) — жауаптарыңыз төменде. «Нәтижені жіберу» батырмасын бассаңыз, мәліметтер мұғалімнің Google Кестесіне жазылады.</p>
+    <div class="card">
+      <table class="results">
+        <thead><tr><th>Тапсырма</th><th style="text-align:right;">Ұпай</th></tr></thead>
+        <tbody>${rows}</tbody>
+        <tfoot><tr class="total-row"><td>Жалпы балл</td><td class="sc">${total} / ${max}</td></tr></tfoot>
+      </table>
+      <div id="sendStatus" class="status-line"></div>
+      <div class="btn-row"><button class="btn btn-ghost btn-block" id="copyBtn">Нәтижені көшіру</button></div>
+    </div>`;
+  if(state.sent){
+    const s0 = document.getElementById('sendStatus');
+    s0.className = "status-line show ok";
+    s0.textContent = "Нәтиже жіберілген. Қайта жіберу мүмкін емес.";
+  }
+  document.getElementById('copyBtn').addEventListener('click', ()=>{
+    const st = document.getElementById('sendStatus');
+    navigator.clipboard?.writeText(buildSummaryText()).then(()=>{
+      st.className = "status-line show ok"; st.textContent = "Нәтиже алмасу буферіне көшірілді.";
+    }).catch(()=>{
+      st.className = "status-line show bad"; st.textContent = "Көшіру мүмкін болмады, қолмен көшіріңіз.";
+    });
+  });
+}
+
+function buildSummaryText(){
+  const {total, max} = totals();
+  const lines = [`Топ: ${state.group}`, `Аты-жөні: ${state.name}`, `Күні: ${new Date().toLocaleString('kk-KZ')}`];
+  TASKS.forEach(t=>{ const a = state.answers[t.id]; lines.push(`Тапсырма ${t.id}: ${a? a.score : 0} / 10`); });
+  lines.push(`Жалпы балл: ${total} / ${max}`);
+  lines.push(`Практикалық сессия: ${state.practical || "(жазылмаған)"}`);
+  lines.push(`Үй тапсырмасы: ${state.homework || "(жазылмаған)"}`);
+  lines.push(`Шрифттер мен өлшемдер: ${state.homeworkFonts || "(жазылмаған)"}`);
+  lines.push(`Рефлексия: ${state.reflection || "(жазылмаған)"}`);
+  return lines.join("\n");
+}
+
+async function sendResults(){
+  if(state.sent || state.sending) return;
+  const st = document.getElementById('sendStatus');
+  const {total, max} = totals();
+  const perTask = {};
+  TASKS.forEach(t=>{ const a = state.answers[t.id]; perTask["task"+t.id] = a ? a.score : 0; });
+  const payload = {
+    timestamp: new Date().toISOString(),
+    group: state.group, name: state.name,
+    ...perTask, total, max,
+    practical: state.practical,
+    homework: state.homework,
+    homeworkFonts: state.homeworkFonts,
+    reflection: state.reflection
+  };
+  if(!SCRIPT_URL || SCRIPT_URL.indexOf("PASTE_YOUR") === 0){
+    st.className = "status-line show bad";
+    st.textContent = "Google Кестенің сілтемесі орнатылмаған. Мұғалім SCRIPT_URL мәнін толтыруы керек. Әзірге нәтижені «Нәтижені көшіру» батырмасымен сақтаңыз.";
+    return;
+  }
+  state.sending = true;
+  updateNav();
+  st.className = "status-line show wait";
+  st.textContent = "Жіберілуде...";
+  try{
+    await fetch(SCRIPT_URL, {
+      method:"POST", mode:"no-cors",
+      headers:{"Content-Type":"text/plain;charset=utf-8"},
+      body: JSON.stringify(payload)
+    });
+    state.sent = true;
+    state.sending = false;
+    st.className = "status-line show ok";
+    st.textContent = "Нәтиже сәтті жіберілді. Рахмет!";
+    updateNav();
+  }catch(err){
+    state.sending = false;
+    updateNav();
+    st.className = "status-line show bad";
+    st.textContent = "Жіберу кезінде қате шықты. Интернет байланысын тексеріп, қайта көріңіз.";
+  }
+}
+
+/* ===================== NAV ===================== */
+btnBack.addEventListener('click', ()=>{ if(state.cur>0){ state.cur--; render(); } });
+btnNext.addEventListener('click', ()=>{
+  const step = steps[state.cur];
+  if(step.type === "results"){ sendResults(); return; }
+  if(state.cur < steps.length-1){ state.cur++; render(); }
+});
+
+render();
+</script>
+</body>
+</html>
