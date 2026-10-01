@@ -180,6 +180,16 @@
   .checklist li:last-child{border-bottom:none;}
   .checklist .n{font-family:var(--mono);font-weight:700;color:var(--accent);flex:none;width:20px;}
 
+  /* file upload */
+  .drop{border:2px dashed var(--border);border-radius:var(--radius-sm);padding:22px 14px;text-align:center;cursor:pointer;color:var(--muted);font-size:14px;transition:.15s;background:var(--surface-2);}
+  .drop.over,.drop:hover{border-color:var(--accent);background:rgba(215,255,63,0.06);}
+  .drop.locked{pointer-events:none;opacity:.6;}
+  .drop b{display:block;margin-top:6px;color:var(--text);word-break:break-all;font-weight:600;}
+  .up-bar{height:5px;background:var(--border);border-radius:3px;margin-top:12px;overflow:hidden;display:none;}
+  .up-bar i{display:block;height:100%;width:40%;background:var(--accent);animation:upm 1s infinite ease-in-out;}
+  @keyframes upm{0%{margin-left:-40%}100%{margin-left:100%}}
+  .field select{width:100%;}
+
   .navbar{position:fixed;bottom:0;left:0;right:0;z-index:20;background:rgba(16,17,20,0.95);backdrop-filter:blur(10px);border-top:1px solid var(--border);padding:12px 16px calc(12px + env(safe-area-inset-bottom));}
   .navbar-inner{max-width:640px;margin:0 auto;display:flex;gap:10px;align-items:center;}
   .navbar .btn{flex:1;}
@@ -222,8 +232,16 @@
 ========================================================= */
 const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzExtfZsOgguKfqhJYmuGw5-EPphAq7Hig9dN2sgjwYJiYcUGXOJISB1LaV6rDxy7lVRA/exec";
 
+/* =========================================================
+   Практикалық жұмыс файлын жүктейтін Apps Script URL (Google Drive-қа)
+========================================================= */
+const UPLOAD_URL = "https://script.google.com/macros/s/AKfycbyNRO3wxUDINioHQ0IBgevt5e3hpsV0vxH5ayqvIcrT-Liqlo9S8qJZjiPfYnCRxfDp/exec";
+const MAX_MB = 20;
+const GROUPS = ["БҚ-9-16","АҚ-9-16","АҚ-9-36","ЕТ-9-16","ЕТ-9-36","ЕТ-9-56"];
+
 const state = {
   group:"", name:"", cur:0,
+  practicalFile:null, practicalUploaded:false, practicalFileName:"", uploading:false,
   answers:{},
   practical:"", homework:"", homeworkFonts:"", reflection:"",
   sent:false
@@ -499,6 +517,10 @@ function updateNav(){
   } else if(step.type === "results"){
     btnNext.textContent = state.sent ? "Аяқталды ✓" : (state.sending ? "Жіберілуде..." : "Нәтижені жіберу");
     btnNext.disabled = !!(state.sent || state.sending);
+  } else if(step.type === "practical"){
+    btnNext.textContent = "Келесі";
+    btnNext.disabled = !state.practicalUploaded || !!state.uploading;
+    navHint.textContent = state.uploading ? "Файл жүктелуде, күтіңіз..." : (state.practicalUploaded ? "" : "Жалғастыру үшін жұмыс файлын жүктеңіз");
   } else {
     btnNext.textContent = "Келесі";
     btnNext.disabled = false;
@@ -513,16 +535,19 @@ function renderStart(){
     <div class="card">
       <div class="field">
         <label for="inpGroup">Оқу тобы</label>
-        <input type="text" id="inpGroup" placeholder="мысалы, Д-21" value="${esc(state.group)}">
+        <select id="inpGroup">
+          <option value="">Топты таңдаңыз</option>
+          ${GROUPS.map(g=>`<option${g===state.group?' selected':''}>${g}</option>`).join('')}
+        </select>
       </div>
       <div class="field" style="margin-bottom:0;">
         <label for="inpName">Аты-жөніңіз</label>
         <input type="text" id="inpName" placeholder="мысалы, Асан Асанов" value="${esc(state.name)}">
       </div>
     </div>
-    <div class="fact"><b>Сабақ жоспары:</b> 8 қысқа теориялық блок (әрқайсысынан кейін тапсырма), практикалық дизайн-сессия, үй тапсырмасы және рефлексия. Нәтиже соңында мұғалімнің Google Кестесіне жіберіледі.</div>
+    <div class="fact"><b>Сабақ жоспары:</b> 8 қысқа теориялық блок (әрқайсысынан кейін тапсырма), практикалық дизайн-сессия, үй тапсырмасы және рефлексия. Практикалық жұмыс файлын сол жерде жүктейсіз. Нәтиже соңында мұғалімнің Google Кестесіне жіберіледі.</div>
   `;
-  document.getElementById('inpGroup').addEventListener('input', e => { state.group = e.target.value; updateNav(); });
+  document.getElementById('inpGroup').addEventListener('change', e => { state.group = e.target.value; updateNav(); });
   document.getElementById('inpName').addEventListener('input', e => { state.name = e.target.value; updateNav(); });
 }
 
@@ -543,12 +568,104 @@ function renderPractical(){
         <li><span class="n">3</span><span>Үш деңгейлі иерархия құрыңыз: тақырып, қосалқы тақырып, негізгі мәтін.</span></li>
         <li><span class="n">4</span><span>Трекинг пен интерлиньяжды реттеп, мәтін мен фон контрастын тексеріңіз.</span></li>
       </ul>
-      <div class="field" style="margin-bottom:0;">
+      <div class="field">
         <label for="practicalText">Не жасадыңыз? Қай құралды және қандай шрифттерді қолдандыңыз?</label>
         <textarea id="practicalText" placeholder="Мысалы: Canva-да плакат жасадым, тақырыпқа Playfair Display, мәтінге Manrope таңдадым...">${esc(state.practical)}</textarea>
       </div>
+      <div class="field" style="margin-bottom:0;">
+        <label>Дайын жұмысыңызды жүктеңіз (PNG, JPG немесе PDF, ең көбі ${MAX_MB} МБ)</label>
+        <div class="drop" id="drop">Файлды осында тастаңыз немесе таңдау үшін басыңыз<b id="fname"></b></div>
+        <input type="file" id="pfile" style="display:none;">
+        <div class="btn-row"><button class="btn btn-good btn-block" id="uploadBtn">Жұмысты жүктеу</button></div>
+        <div class="up-bar" id="upBar"><i></i></div>
+        <div id="upMsg" class="status-line"></div>
+      </div>
     </div>`;
   document.getElementById('practicalText').addEventListener('input', e=>{ state.practical = e.target.value; });
+  wirePracticalUpload();
+}
+
+function wirePracticalUpload(){
+  const drop = document.getElementById('drop');
+  const input = document.getElementById('pfile');
+  const btn = document.getElementById('uploadBtn');
+  const bar = document.getElementById('upBar');
+  const msg = document.getElementById('upMsg');
+  const fname = document.getElementById('fname');
+  const say = (text, cls) => { msg.className = "status-line show " + cls; msg.textContent = text; };
+
+  function lockUploaded(note){
+    drop.classList.add('locked');
+    fname.textContent = state.practicalFileName;
+    btn.disabled = true; btn.textContent = "Жүктелді ✔";
+    say(note || "Жұмыс сәтті жүктелді ✔", "ok");
+  }
+  function setFile(f){
+    state.practicalFile = f;
+    fname.textContent = f ? f.name + " (" + (f.size/1048576).toFixed(1) + " МБ)" : "";
+    msg.className = "status-line";
+  }
+
+  if(state.practicalUploaded){ lockUploaded(); return; }
+  if(state.practicalFile) setFile(state.practicalFile);
+  if(state.uploading){ btn.disabled = true; bar.style.display = "block"; say("Жүктелуде...", "wait"); }
+
+  drop.addEventListener('click', ()=> input.click());
+  input.addEventListener('change', ()=>{ if(input.files[0]) setFile(input.files[0]); });
+  ['dragenter','dragover'].forEach(e=>drop.addEventListener(e, ev=>{ ev.preventDefault(); drop.classList.add('over'); }));
+  ['dragleave','drop'].forEach(e=>drop.addEventListener(e, ev=>{ ev.preventDefault(); drop.classList.remove('over'); }));
+  drop.addEventListener('drop', ev=>{ if(ev.dataTransfer.files[0]) setFile(ev.dataTransfer.files[0]); });
+
+  btn.addEventListener('click', ()=>{
+    if(btn.disabled || state.uploading) return;
+    const f = state.practicalFile;
+    if(!f) return say("Алдымен файлды таңдаңыз.", "bad");
+    if(f.size > MAX_MB*1048576) return say("Файл тым үлкен (максимум " + MAX_MB + " МБ).", "bad");
+
+    state.uploading = true; updateNav();
+    btn.disabled = true; bar.style.display = "block"; say("Жүктелуде...", "wait");
+
+    const fail = text => {
+      state.uploading = false; updateNav();
+      bar.style.display = "none"; btn.disabled = false; say(text, "bad");
+    };
+    const reader = new FileReader();
+    reader.onload = async ()=>{
+      const base64 = reader.result.split(',')[1];
+      const body = JSON.stringify({ group: state.group, fullName: state.name, fileName: f.name, mimeType: f.type, base64 });
+      const done = note => {
+        state.uploading = false;
+        state.practicalUploaded = true;
+        state.practicalFileName = f.name;
+        updateNav();
+        bar.style.display = "none";
+        if(document.getElementById('drop')) lockUploaded(note);
+      };
+      let res;
+      try{
+        res = await fetch(UPLOAD_URL, { method:"POST", headers:{"Content-Type":"text/plain;charset=utf-8"}, body });
+      }catch(err){
+        // Жауап оқылмады (CORS/желі). Сұранысты no-cors режимінде қайта жіберіп көреміз.
+        try{
+          await fetch(UPLOAD_URL, { method:"POST", mode:"no-cors", headers:{"Content-Type":"text/plain;charset=utf-8"}, body });
+          return done("Файл жіберілді (сервер жауабын оқу мүмкін болмады, мұғалімнен тексертіңіз).");
+        }catch(err2){
+          console.error("Upload failed:", err, err2);
+          return fail("Қате: серверге қосыла алмады (" + (err2.message || err.message) + "). Интернетті тексеріп, бетті сайттан (https) ашыңыз.");
+        }
+      }
+      try{
+        const out = await res.json();
+        if(!out.ok) return fail("Қате: " + out.error);
+        done();
+      }catch(err){
+        console.error("Bad server response:", err, res.status);
+        fail("Қате: сервер күтпеген жауап қайтарды (HTTP " + res.status + "). Мұғалім Apps Script-ті «Anyone» рұқсатымен қайта жариялауы керек.");
+      }
+    };
+    reader.onerror = ()=> fail("Файлды оқу мүмкін болмады.");
+    reader.readAsDataURL(f);
+  });
 }
 
 function renderHomework(){
@@ -948,6 +1065,7 @@ function renderResults(){
         <tbody>${rows}</tbody>
         <tfoot><tr class="total-row"><td>Жалпы балл</td><td class="sc">${total} / ${max}</td></tr></tfoot>
       </table>
+      <div class="status-line show ${state.practicalUploaded?'ok':'bad'}" style="margin-bottom:12px;">${state.practicalUploaded ? 'Практикалық жұмыс жүктелген: '+esc(state.practicalFileName) : 'Практикалық жұмыс файлы жүктелмеген. «Артқа» басып, жүктеп шығыңыз.'}</div>
       <div id="sendStatus" class="status-line"></div>
       <div class="btn-row"><button class="btn btn-ghost btn-block" id="copyBtn">Нәтижені көшіру</button></div>
     </div>`;
@@ -972,6 +1090,7 @@ function buildSummaryText(){
   TASKS.forEach(t=>{ const a = state.answers[t.id]; lines.push(`Тапсырма ${t.id}: ${a? a.score : 0} / 10`); });
   lines.push(`Жалпы балл: ${total} / ${max}`);
   lines.push(`Практикалық сессия: ${state.practical || "(жазылмаған)"}`);
+  lines.push(`Практикалық жұмыс файлы: ${state.practicalUploaded ? state.practicalFileName : "(жүктелмеген)"}`);
   lines.push(`Үй тапсырмасы: ${state.homework || "(жазылмаған)"}`);
   lines.push(`Шрифттер мен өлшемдер: ${state.homeworkFonts || "(жазылмаған)"}`);
   lines.push(`Рефлексия: ${state.reflection || "(жазылмаған)"}`);
@@ -989,6 +1108,7 @@ async function sendResults(){
     group: state.group, name: state.name,
     ...perTask, total, max,
     practical: state.practical,
+    practicalFile: state.practicalUploaded ? state.practicalFileName : "",
     homework: state.homework,
     homeworkFonts: state.homeworkFonts,
     reflection: state.reflection
